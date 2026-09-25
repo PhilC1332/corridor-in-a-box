@@ -71,6 +71,7 @@ describe("engine.execute", () => {
         "quoted",
         "compliant",
         "opened",
+        "verifying",
         "settling",
         "settled",
         "reconciled",
@@ -683,7 +684,7 @@ describe("state machine", () => {
     expect(canTransition("completed", "settling")).toBe(false);
   });
 
-  it("routes the settle retry loop through `retrying`, not `recovering`", () => {
+  it("routes the settle retry loop through retrying and verifying, not recovering", () => {
     // These were one state, and this test used to assert
     // `canTransition("recovering", "settling") === true` — which, combined with
     // `settled -> recovering`, made `settled -> recovering -> settling` a legal
@@ -691,7 +692,12 @@ describe("state machine", () => {
     // test walking the graph found it. The two kinds of recovery are now
     // distinct so the double-spend is unreachable by construction.
     expect(canTransition("settling", "retrying")).toBe(true);
-    expect(canTransition("retrying", "settling")).toBe(true);
+
+    // A retry re-enters through the gate, never straight back into submit.
+    expect(canTransition("retrying", "verifying")).toBe(true);
+    expect(canTransition("verifying", "settling")).toBe(true);
+    expect(canTransition("retrying", "settling")).toBe(false);
+    expect(canTransition("opened", "settling")).toBe(false);
 
     // `recovering` is terminal-bound and cannot get back to the chain.
     expect(canTransition("recovering", "settling")).toBe(false);
@@ -791,6 +797,7 @@ describe("engine refund path", () => {
       "quoted",
       "compliant",
       "opened",
+      "verifying",
       "settling",
       "settled",
       "recovering",
