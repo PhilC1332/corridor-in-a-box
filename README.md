@@ -186,7 +186,7 @@ USDC trustline and balance, and `pnpm testnet` drives a payment across it.
 A captured run on **2026-08-08**, corridor `reference-testnet`:
 
 ```
-created → quoted → compliant → opened → verifying → settling → settled → (polling reconcile)
+created → quoted → compliant → opened → settling → settled → (polling reconcile)
 ```
 
 Every leg below happened against the anchor and is visible in _its_ logs, not
