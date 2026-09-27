@@ -1,9 +1,9 @@
-// @corridor/router — the open-core line drawn in code.
+// @corridor/router — the RouteResolver seam drawn in code.
 //
-// The interface and a dumb default ship here, in the open repo. The REAL resolver
-// — health-weighted, rate-aware, split-routing, fed by the anchor conformance
-// dataset — is proprietary and injected at runtime. Anyone can run the open
-// engine; only the operator supplies the routing intelligence.
+// The interface and a simple default ship here, in the open repo. A resolver
+// weighted by anchor health, conformance, latency, and proprietary routing data
+// could be supplied separately in the future; no such proprietary component is
+// included or injected here. Anyone can run the open engine with its default.
 
 import type { Corridor } from "@corridor/manifest";
 import type { AnchorAdapter } from "@corridor/adapter-kit";
@@ -28,8 +28,8 @@ export interface StaticRouteResolverOptions {
 
 /**
  * Default resolver: use the single anchor the manifest declares. No intelligence.
- * Swap this out for the proprietary resolver by passing a different RouteResolver
- * to the engine — that is the entire open/closed boundary.
+ * Swap this out for another RouteResolver implementation if one is developed;
+ * the interface is an extension seam, not evidence of a separate closed repo.
  */
 export class StaticRouteResolver implements RouteResolver {
   constructor(
@@ -51,7 +51,7 @@ export class StaticRouteResolver implements RouteResolver {
   }
 }
 
-// The registry-backed resolver: the open half of the seam, in code.
+// The registry-backed resolver: the evidence-based resolver, in code.
 // StaticRouteResolver above trusts the manifest; this one requires evidence.
 export {
   RegistryRouteResolver,
