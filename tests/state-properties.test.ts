@@ -221,6 +221,11 @@ describe("state machine structure", () => {
     expect(canTransition("verifying", "recovering")).toBe(false);
   });
 
+  it("only opened and retrying reach verifying", () => {
+    const entrances = ALL.filter((s) => canTransition(s, "verifying")).sort();
+    expect(entrances).toEqual(["opened", "retrying"]);
+  });
+
   it("opened can no longer settle directly", () => {
     expect(canTransition("opened", "verifying")).toBe(true);
     expect(canTransition("opened", "settling")).toBe(false);
